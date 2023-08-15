@@ -13,7 +13,7 @@ setup(
     author="Sauce",
     author_email="saucejullyfish@gmail.com",
     license="GNU",
-    packages=["tomllib"],
+    packages=["toml_lib"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "Development Status :: 5 - Production/Stable",
