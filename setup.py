@@ -4,7 +4,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="tomllib",
+    name="toml-lib",
     version="1.1.0",
     description="Allows for simple disk writing to keep persistent data.",
     long_description=long_description,
