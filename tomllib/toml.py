@@ -1,5 +1,5 @@
 import tomlkit
-
+import json
 
 class TomlConfig:
     def __init__(self, data, filename=None):
@@ -11,7 +11,7 @@ class TomlConfig:
                 setattr(self, key, TomlConfig(value))
             else:
                 setattr(self, key, value)
-        self.__file__ = filename
+        if filename : self.__file__ = filename
 
     @classmethod
     def load(cls, filename: str):
@@ -94,7 +94,8 @@ class TomlConfig:
             KeyError: If the specified key does not exist.
 
         Example:
-            toml.update_item('section1.key1', 'new_value')
+            toml.section1.update_item('key1', 'new_value')
+                toml.section1.key1 = old -> new_value
         """
         if hasattr(self, key):
             setattr(self, key, value)
@@ -161,3 +162,56 @@ class TomlConfig:
             raise ValueError(
                 "Original filename not available. Use save_to_file() instead.")
         self.save_to_file(self.__file__)
+        
+    def get(self, key:str):
+        """
+        Get the value of the given key.
+        Return the dictionary of toml.data.key or its value.
+
+        Args:
+            key (str): The key to get.
+            
+        Example:
+            tomlfile
+            [data]
+            key = 1
+            key2 = 2
+            
+            python
+            toml.data.get('key') >>> 1 
+            toml.get('data')     >>> {'key': 1, 'key2': 2}
+        """
+        if hasattr(self, key):
+            attr = getattr(self, key)
+            if isinstance(attr, TomlConfig):
+                return attr.__dict__
+            else:return attr
+        else:
+            raise KeyError(f"Key '{key}' does not exist.")
+        
+    def to_json(self):
+        """
+        Converts Toml to JSON
+
+        Returns:
+            json_string:str
+        """
+        return json.dumps(self.to_dict(), indent=4)
+
+    @classmethod
+    def from_json(cls, json_data:str):
+        """
+        Create a Toml object from JSON file
+
+        Args:
+            json_data (str): JSON file path
+            
+        Returns:
+            Tomlconfig object
+            
+        Notice:
+            With saving , using save_to_file().
+        """
+        with open(json_data,'r') as f:
+            data = json.load(f)
+            return cls(data)
